@@ -7,17 +7,18 @@ var cookieParser = require('cookie-parser')
 const path  = __dirname + '/public/';
 
 const auth_router = require('./auth_user.js');
+const client_router = require('./clients.js');
 const make_router = require('./makeUsers.js');
 
 app.use(express.json());
 app.set('view-engine', 'ejs');
 app.use(cookieParser());
 app.use('/login',auth_router);
+app.use('/clients',client_router);
 app.use('/create',make_router);
 app.use('/js', express.static(path+'js'));
 app.use('/css', express.static(path+'css'));
-app.use('/bootstrap', express.static(path+'external/bootstrap'));
-app.use('/jquery', express.static(path+'external/jquery'));
+app.use('/ext', express.static(path+'external'));
 
 
 app.get('/',checkToken, (req,res) =>{

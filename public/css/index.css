@@ -1,29 +1,8 @@
 
-#recipeCards{
+#clientCards{
     padding: 3%;
 }
 
 .card a{
     color: #000;
-}
-
-.catgroup {
-  margin: auto;
-  font-size: 18pt;
-}
-
-.catgroup :hover {
-  background-color: #555;
-  color: #fff;
-}
-
-.list-group-item {
-  border: 1px solid #000;
-}
-
-
-@media only screen and (min-width: 600px) {
-  .catgroup {
-    width: 40%;
-  }
 }

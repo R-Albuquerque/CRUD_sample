@@ -1,0 +1,18 @@
+
+.profile {
+    padding: 20px 0 10px 0;
+    background: #fff;
+    text-align: center;
+  }
+
+.profile-title {
+    font-size: 30pt;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+.table{
+    margin: auto;
+    width: 50%;
+  }
+  
