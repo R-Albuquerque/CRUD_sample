@@ -22,7 +22,7 @@ clients_router.get('/', (req, res, next) => {
         throw err;
         }
         res.send(rows);
-        console.log(rows);
+        // console.log(rows);
     });
   });
 

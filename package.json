@@ -4,7 +4,8 @@
   "description": "Simple CRUD System",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "devStart": "nodemon server.js",
+    "devStartAuth": "nodemon auth_server.js"
   },
   "repository": {
     "type": "git",

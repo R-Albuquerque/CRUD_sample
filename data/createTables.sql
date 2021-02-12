@@ -6,6 +6,13 @@ CREATE TABLE 'users' (
   `is_admin` INTEGER default 0
 );
 
+DROP TABLE IF EXISTS 'refresh_tokens';
+CREATE TABLE 'refresh_tokens' (
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `user_id` INTEGER NOT NULL
+);
+
 DROP TABLE IF EXISTS 'clients';
 CREATE TABLE 'clients' (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
