@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { checkToken } = require('./checkTokens.js');
 const express = require('express');
 const bodyParser = require("body-parser");
 const sqlite = require('sqlite3');
@@ -7,6 +8,7 @@ const jwt = require('jsonwebtoken')
 // const http = require("http");
 var cookieParser = require('cookie-parser');
 const db = new sqlite.Database('./data/crud.sqlite');
+// const home_path = __dirname;
 
 clients_router = express.Router();
 clients_router.use(bodyParser.urlencoded({
@@ -32,7 +34,13 @@ clients_router.get('/', (req, res, next) => {
   });
 
   // ============================= See one client ==============
-  clients_router.get('/view/:client2view', (req, res, next) => {
+  clients_router.get('/view/:client2view',checkToken, (req, res, next) => {
+
+    const authHeader = req.headers.cookie;
+    const token = authHeader && authHeader.split("; ")[0].split("=")[1];
+    const decodedToken = jwt.decode(token);
+    console.log("DECODED:");
+    console.log(decodedToken);
     var cli = req.params.client2view;
     var emails = [];
     var phones = [];
@@ -48,25 +56,29 @@ clients_router.get('/', (req, res, next) => {
           for (let i = 0; i < mailkeys.length; i++) {
             emails.push(mailrow[i]['email']);            
           }
-          console.log(mailrow);
           db.all(`SELECT * FROM \`phones\` WHERE \`client_id\` = ${cli};`,(er,phonerow)=>{
             if (er) {
-              throw er;
+              console.log(er);;
+            }
+            if (row == undefined) {
+              return res.render('error.ejs', {erro: 'Client not found', redirect: '../../'})
             }
             var phonekeys = Object.keys(phonerow);
             for (let j = 0; j < phonekeys.length; j++) {
               phones.push(phonerow[j]['number']);
             }
-            console.log(phones);
-            res.render('view.ejs', {name: row.name,
+            res.render('view.ejs', {
+              client_id: row.id,
+              name: row.name,
               address: row.address,
               cpf: row.number,
               emails: emails,
-              phones: phones});
+              phones: phones,
+              is_admin: decodedToken.is_admin,
+              user_token: token
+            });
           })
         })
-        
-        console.log(row);
     });
   });
 
@@ -80,9 +92,11 @@ clients_router.get('/', (req, res, next) => {
                       (\`name\`,\`address\`,\`number\`)
                       VALUES
                       ("${req.body.name}","${address}","${req.body.cpf}")`;                    
+    //TO REMEMBER:
+    // The following database operations need serious improving.
+    // Maybe serialize them?
     db.run(clientQuery, function(error){
-        res.redirect('../');
-      console.log("Registered successfully.");
+      if (error) return res.render('error.ejs', {erro: 'Error on client registration', redirect: '../../'});
       db.get(`SELECT * FROM clients WHERE name = "${req.body.name}"`, (err, this_cli) => {
         if (err) {
           console.log(err);
@@ -114,7 +128,48 @@ clients_router.get('/', (req, res, next) => {
             });
         }); 
       });
+      res.redirect('../');
+      console.log("Registered successfully.");
     });
+
+  });
+
+// === DELETE A CLIENT
+clients_router.post('/delete_client', (req, res, next) => {
+    // Check if the user requesting the deletion is admin
+    var is_admin = jwt.decode(req.body.user_token).is_admin;
+    if (is_admin == 1) {
+
+      // Delete from client, email and phone tables all registers of the client
+      db.serialize(() => {
+
+        db.run('BEGIN TRANSACTION;');
+        db.run(`DELETE FROM \`clients\` 
+        WHERE \`id\` = "${req.body.client_id}"`, (err) => {
+          if(err) console.log(err);
+        });
+        db.run(`DELETE FROM \`emails\` 
+        WHERE \`client_id\` = "${req.body.client_id}"`, (err) => {
+          if(err) console.log(err);
+        });
+        db.run(`DELETE FROM \`phones\` 
+        WHERE \`client_id\` = "${req.body.client_id}"`, (err) => {
+          if(err) console.log(err);
+        });
+        db.run('COMMIT;');
+
+      });
+      // Send a message that deletion was successful
+      console.log("Deleted");
+      res.json({message: "Deleted!"})
+
+    }
+
+    // If the user trying to delete from database is not admin:
+    else{
+      res.json({message: "Not Authorized"});
+    }
+
   });
 
   module.exports = clients_router;

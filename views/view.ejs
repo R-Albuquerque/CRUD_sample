@@ -31,6 +31,10 @@
         <a class="nav-link" href="../../clients/register">Add New Client</a>
       </li>
     </ul>
+    <div class="form-inline my-2 my-lg-0">
+      <a class="btn btn-outline-danger my-2 my-sm-0" href="./login/logout" role="button">Log Out</a>
+    </form>
+  </div>
   </div>
 </nav>
 <h1>View Client</h1>
@@ -75,8 +79,10 @@
                       </tr>
                     </tbody>
                   </table>
-
                   <br>
+                  <%if (is_admin == 1){%>
+                    <button type="button" class="btn btn-danger" onclick="deleteClient()">Delete</button>    
+                    <%}%>
     </div>
   </div>
 
@@ -94,7 +100,28 @@
   <script src="../../ext/jqMask/jquery.mask.min.js"></script>
   <!-- <script type="text/javascript" src="../js/cleaninput.js"></script>
   <script type="text/javascript" src="../js/nr_script.js"></script> -->
-  <script type="text/javascript">        
+  <%if (is_admin == 1){%>
+  <script type="text/javascript">
+  function deleteClient(){
+    $.ajax({
+      url: '../delete_client',
+      type: 'POST',
+      data: {
+        client_id: <%=client_id%>,
+        user_token: "<%=user_token%>"
+      },
+      success: function (data) {
+        alert(data.message);
+        if(data.message == "Deleted"){
+          window.location.replace("../../"); 
+        }
+      }, // close 'success'
+      error: function (error) {
+        alert(JSON.stringify(error));
+      },
+    }); // close AJAX call
+  }
   </script>
+  <%}%>
 </body>
 </html>

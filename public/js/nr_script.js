@@ -118,31 +118,4 @@ $(document).ready(function(){
     }
   });
 
-
-
-
-  // $('#subButton').click( function() {
-  //   if (chosenings.length <= 0) {
-  //     alert("Chose at least one ingredient.");
-  //   }
-  //   else if (chosenemails.legth <= 0) {
-  //       alert("Chose at least one email.");
-  //   }
-  //   else if (chosensteps <= 0) {
-  //       alert("Please insert steps to the recipe.");
-  //   }
-  //   else {
-  //     $.ajax({
-  //         url: './register_recipe',
-  //         type: 'post',
-  //         dataType: 'json',
-  //         data: $('form#nrform').serialize(),
-  //         success: function(data) {
-  //                    window.redirect('../');
-  //                  }
-  //     }); // close ajax
-  //   } // close else
-  // });
-
-
 });
