@@ -71,7 +71,7 @@ clients_router.get('/', (req, res, next) => {
               client_id: row.id,
               name: row.name,
               address: row.address,
-              cpf: row.number,
+              cpf: row.number_cpf,
               emails: emails,
               phones: phones,
               is_admin: decodedToken.is_admin,
@@ -85,48 +85,72 @@ clients_router.get('/', (req, res, next) => {
   // ================= Register new client ===================
   clients_router.post('/register_client', (req, res, next) => {
     console.log(req.body);
+
+    const authHeader = req.headers.cookie;
+    const token = authHeader && authHeader.split("; ")[0].split("=")[1];
+    const decodedToken = jwt.decode(token);
+
     var address = req.body.address1 + '' + req.body.address2;
     var mails = req.body.emails.split(',');
     var phonenums = req.body.phones.split(',');
+    var client_cpf = parseInt((req.body.cpf).replace(/\./g,"").replace(/\-/g,''));
+    console.log(typeof client_cpf);
     var clientQuery = `INSERT INTO \`clients\`
-                      (\`name\`,\`address\`,\`number\`)
+                      (\`name\`,\`address\`,\`number_cpf\`,\`creator_id\`,\`creator_username\`)
                       VALUES
-                      ("${req.body.name}","${address}","${req.body.cpf}")`;                    
+                      ("${req.body.name}","${address}",${client_cpf},${decodedToken.id},"${decodedToken.user}")`;                    
     //TO REMEMBER:
     // The following database operations need serious improving.
     // Maybe serialize them?
     db.run(clientQuery, function(error){
-      if (error) return res.render('error.ejs', {erro: 'Error on client registration', redirect: '../../'});
+      if (error) {
+        console.log(error);
+        return res.render('error.ejs', {erro: 'Error on client registration', redirect: '../../'})
+      };
       db.get(`SELECT * FROM clients WHERE name = "${req.body.name}"`, (err, this_cli) => {
         if (err) {
           console.log(err);
         }
-        mails.forEach(element => {
-            db.run(`INSERT INTO \`emails\`
-            (\`email\`,\`client_id\`)
-            VALUES
-            ("${element}","${this_cli.id}")`,
-            function(er){
-              if(er){
-                console.log(er);
-              }
-              else{
-                phonenums.forEach(el => {
-                db.run(`INSERT INTO \`phones\`
-                (\`number\`,\`client_id\`)
-                VALUES
-                ("${el}","${this_cli.id}")`,function(ers){
-                  if (ers){
-                    console.log(ers);
-                  }
-                  else{
-                    // res.redirect("../")
-                  }
-                });
-                });
-              }
-            });
-        }); 
+        var is_ok = true;
+
+        for (let i = 0; i < mails.length; i++) {
+          if (!is_ok) {
+            console.log("===>NOT OK<===");
+            break;
+          }
+          db.run(`INSERT INTO \`emails\`
+          (\`email\`,\`client_id\`)
+          VALUES
+          ("${mails[i]}","${this_cli.id}")`,
+          function(er){
+              if (er){
+                  is_ok = false;
+                  console.log(er);
+                  return 0
+                  };
+          });   
+      }
+  
+      for (let index = 0; index < phonenums.length; index++) {
+          if (!is_ok) {
+            console.log("===>NOT OK<===");
+              break;
+          }
+          db.run(`INSERT INTO \`phones\`
+          (\`number\`,\`client_id\`)
+          VALUES
+          ("${phonenums[index]}","${this_cli.id}")`,function(ers){
+              if (ers){
+                  is_ok = false;
+                  console.log(er);
+                  return 0
+                  };
+          });
+          
+      }
+      if (!is_ok) {
+        console.log("===>NOT OK<===");
+      }
       });
       res.redirect('../');
       console.log("Registered successfully.");

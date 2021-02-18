@@ -32,7 +32,7 @@
       </li>
     </ul>
     <div class="form-inline my-2 my-lg-0">
-      <a class="btn btn-outline-danger my-2 my-sm-0" href="./login/logout" role="button">Log Out</a>
+      <a class="btn btn-outline-danger my-2 my-sm-0" href="../../login/logout" role="button">Log Out</a>
     </form>
   </div>
   </div>
@@ -53,7 +53,7 @@
                     <tbody>
                       <tr>
                         <th scope="row">Number (CPF)</th>
-                        <td><%= cpf%></td>
+                        <td id="cpfField"><%=cpf%></td>
                       </tr>
                       <tr>
                         <th scope="row">E-mails</th>
@@ -98,10 +98,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="../../ext/bootstrap/js/bootstrap.min.js"></script>
   <script src="../../ext/jqMask/jquery.mask.min.js"></script>
+  
   <!-- <script type="text/javascript" src="../js/cleaninput.js"></script>
   <script type="text/javascript" src="../js/nr_script.js"></script> -->
+  
+  <script>
+      $(document).ready(function(){
+
+        $('#cpfField').text(function(i, text) {
+          return text.replace(/(\d{3})(\d{3})(\d{3})/, '$1.$2.$3-');
+        });
+      
+      });
+  </script>
+
   <%if (is_admin == 1){%>
   <script type="text/javascript">
+
   function deleteClient(){
     $.ajax({
       url: '../delete_client',

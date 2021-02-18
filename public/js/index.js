@@ -1,12 +1,19 @@
 
 $(document).ready(function(){
 
+
+
+    function formatCpf(text) {
+      return text.toString().replace(/(\d{3})(\d{3})(\d{3})/, '$1.$2.$3-');      
+    };
+  
+
     $.ajax({
       url: './clients',
       type: 'GET',
       data: {},
       success: function (data) {
-        console.log(data);
+        // console.log(data);
         data.forEach((item, i) => {
           
 
@@ -14,7 +21,7 @@ $(document).ready(function(){
                       
                       <div class="card-body">
                         <h5 class="card-title">${item.name}</h5>
-                        <p class="card-text">CPF: ${item.number}</p>
+                        <p class="card-text">CPF: ${formatCpf(item.number_cpf)}</p>
                         <a href='./clients/view/${item.id}'>
                         <span><u>Click for more info</u></span>
                         </a>
