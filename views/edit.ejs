@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="shortcut icon" href="">
-    <link rel="stylesheet" href="../ext/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/new_rec.css">
-    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../../ext/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/new_rec.css">
+    <link rel="stylesheet" href="../../css/login.css">
 
     <title>CRUD Example</title>
   </head>
@@ -29,22 +29,22 @@
       </li> -->
     </ul>
     <div class="form-inline my-2 my-lg-0">
-      <a class="btn btn-outline-danger my-2 my-sm-0" href="./login/logout" role="button">Log Out</a>
+      <a class="btn btn-outline-danger my-2 my-sm-0" href="../../login/logout" role="button">Log Out</a>
     </form>
   </div>
   </div>
 </nav>
-<h1>Register New Client</h1>
+<h1>Edit Client</h1>
 
 <br>
-<h1 class='text-center'>Add Client</h1>
+<h1 class='text-center'>Edit Client</h1>
 <hr>
 
 <div class="container">
   <form class="" action="./register_client" method="post">
     <div class="form-group">
       <label for="rname">Name:</label>
-      <input type="text" class="form-control" id="" placeholder="Client name" name="name" required>
+      <input value="<%=name%>" type="text" class="form-control" id="" placeholder="Client name" name="name" required>
     </div>
 
     <div class="form-row">
@@ -103,7 +103,7 @@
 
   <div class="form-row">
     <div class="form-group col-md-4">
-      <input required name="cpf" type="text" class="form-control cpf" id="cpf" placeholder="000.000.000-00">
+      <input value="<%=cpf%>" required name="cpf" type="text" class="form-control cpf" id="cpf" placeholder="000.000.000-00">
     </div>
   </div>
   <span class="warn" id="cpfwarn"></span>
@@ -117,7 +117,7 @@
   <div class="row">
     <div class="col-md-4">
       <label for="inputCountry" class="form-label">Country</label>
-      <select id="inputCountry" name="country"  class="custom-select" onchange="selectProvinces(this.value)">
+      <select name="country" id="inputCountry" class="custom-select" onchange="selectProvinces(this.value)">
         <option selected>Choose...</option>
       </select>
       <!-- <input type="text" class="form-control" id="inputCountry"> -->
@@ -143,7 +143,7 @@
       
       <div class="col-md-6">
         <label for="cep">CEP (Zip Code):</label>
-      <input required name="cep" type="text" class="form-control cep" id="cep" placeholder="00000-000">
+      <input required value="<%=cep%>" name="cep" type="text" class="form-control cep" id="cep" placeholder="00000-000">
       </div>
   
   <span class="warn" id="cepwarn"></span>
@@ -154,7 +154,8 @@
 <!-- ================================ -->
 
     <div class="form-group">
-      <button class="btn btn-success" type="submit">Add Client</button>
+      <button class="btn btn-success" type="submit">Confirm Edit</button>
+      <button class="btn btn-danger" type="button" onclick="cancelEdit()">Cancel</button>
       <div class="fclist">
         <p class='fieldcheck' id="noemail"></p>
         <p class='fieldcheck' id="nophone"></p>
@@ -172,16 +173,24 @@
     <a href="https://github.com/R-Albuquerque">Github</a></p>
   </footer>
 
-  <script src="../ext/jquery/jquery-3.5.1.min.js"></script>
+  <script src="../../ext/jquery/jquery-3.5.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="../ext/bootstrap/js/bootstrap.min.js"></script>
-  <script src="../ext/jqMask/jquery.mask.min.js"></script>
-  <script type="text/javascript" src="../js/cleaninput.js"></script>
-  <script type="text/javascript" src="../js/nr_script.js"></script>
-  <script type="text/javascript" src="../js/country_states.js"></script>
-  <script type="text/javascript" src="../js/countryCodes.js"></script>
-  <script type="text/javascript" src="../js/addressAndPhoneInputs.js"></script>
-  <script type="text/javascript">        
+  <script src="../../ext/bootstrap/js/bootstrap.min.js"></script>
+  <script src="../../ext/jqMask/jquery.mask.min.js"></script>
+  <script type="text/javascript">
+    var readyMails = "<%=emails%>".split(',');
+    var readyPhones = "<%=phones%>".split(',');
+    var readyCountry = "<%=country%>";
+    var readyCity = "<%=city%>";
+    var readyState = "<%=state%>";
+    console.log(readyMails);
+    console.log(readyPhones);
   </script>
+   <script type="text/javascript" src="../../js/country_states.js"></script>
+   <script type="text/javascript" src="../../js/countryCodes.js"></script>
+  <script type="text/javascript" src="../../js/cleaninput.js"></script>
+  <script type="text/javascript" src="../../js/addressAndPhoneInputs.js"></script>
+  <script type="text/javascript" src="../../js/edit_script.js"></script>
+  
 </body>
 </html>

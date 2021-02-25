@@ -7,6 +7,10 @@ var phonecount = 0;
 var chosenphones = [];
 
 
+  togBut(chosenemails, 'email');
+  $("#emaillist").val(chosenemails);
+  $("#emails").val("");
+  $("#emailwarn").html("");
 
 $('.cpf').mask('000.000.000-00', {reverse: true});
 $('.cep').mask('00000-000');
@@ -64,6 +68,50 @@ function togBut(list, field){
 // ========== TO BE EXECUTED AFTER DOCUMENT LOADS
 $(document).ready(function(){
 
+    for (let i = 0; i < readyMails.length; i++) {
+        $('#emailbox').append(
+        `<span type ="button" class='emailpill btn btn-info'
+        onclick="delemail(this, '${cleanemailphone(readyMails[i])}')">${cleanemailphone(readyMails[i])}</span>`
+      );
+      chosenemails.push(cleanemailphone(readyMails[i]));
+      emailcount++;
+    }
+    
+    for (let j = 0; j < readyPhones.length; j++) {
+        // const element = array[i];
+        $('#phonebox').append(
+            `<span type ="button" class='emailpill btn btn-info'
+            onclick="delphone(this, '${readyPhones[j]}')">${readyPhones[j]}</span>`
+          );
+          chosenphones.push(readyPhones[j]);
+          phonecount++;
+    }
+    
+    var provinceKeys = Object.keys(provinces_states);
+    var countrySelect = $("#inputCountry");
+    var stateSelect = $("#inputState");
+    
+    for(var k=0; k<provinceKeys.length; k++){
+        if (provinceKeys[k] == readyCountry){
+            console.log(readyCountry);
+            console.log(provinceKeys[k]);
+            countrySelect.val(readyCountry);
+            var this_country = countrySelect.val();
+            console.log(this_country);
+            console.log(readyState);
+            selectProvinces(readyCountry)
+            for (let m = 0; m < provinces_states[readyCountry].length; m++) {
+                if(provinces_states[readyCountry][m] = readyState){
+                    stateSelect.val(readyState);   
+                }
+            }
+        break
+        }
+           
+    }
+
+    $('#inputCity').val(readyCity);
+
   $(':input[type="text"]').keyup(function(){
     var this_inp = $(this).val();
     $(this).val(cleanInput(this_inp));
@@ -99,8 +147,8 @@ $(document).ready(function(){
   });
 
   $("#addphone").click(function(){
-    var phoneNum = $("#phones").val()
-    phonetxt = $("#countryCode").val() + cleanemailphone(phoneNum);
+    var phoneNum = cleanemailphone($("#phones").val());
+    phonetxt = $("#countryCode").val() + phoneNum;
     if (cleanphone(phonetxt) == "") {
       $("#phonewarn").html("Insert phone.");
     }
@@ -120,3 +168,6 @@ $(document).ready(function(){
   });
 
 });
+
+
+

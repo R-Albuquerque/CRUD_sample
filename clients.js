@@ -90,15 +90,15 @@ clients_router.get('/', (req, res, next) => {
     const token = authHeader && authHeader.split("; ")[0].split("=")[1];
     const decodedToken = jwt.decode(token);
 
-    var address = req.body.address1 + '' + req.body.address2;
+    var address = req.body.address1 + '#' + req.body.address2;
     var mails = req.body.emails.split(',');
     var phonenums = req.body.phones.split(',');
     var client_cpf = parseInt((req.body.cpf).replace(/\./g,"").replace(/\-/g,''));
     console.log(typeof client_cpf);
     var clientQuery = `INSERT INTO \`clients\`
-                      (\`name\`,\`address\`,\`number_cpf\`,\`creator_id\`,\`creator_username\`)
+                      (\`name\`,\`address\`,\`country\`,\`state\`,\`city\`,\`zip\`,\`number_cpf\`,\`creator_id\`,\`creator_username\`)
                       VALUES
-                      ("${req.body.name}","${address}",${client_cpf},${decodedToken.id},"${decodedToken.user}")`;                    
+                      ("${req.body.name}","${address}","${req.body.country}","${req.body.state}","${req.body.city}","${req.body.cep}",${client_cpf},${decodedToken.id},"${decodedToken.user}")`;                    
     //TO REMEMBER:
     // The following database operations need serious improving.
     // Maybe serialize them?
@@ -155,6 +155,67 @@ clients_router.get('/', (req, res, next) => {
       res.redirect('../');
       console.log("Registered successfully.");
     });
+
+  });
+
+   // ================= Client edit form ===================
+   clients_router.get('/edit/:client2edit',checkToken, (req, res, next) => {
+    console.log(req.body);
+
+    const cli = req.params.client2edit;
+    var emails = [];
+    var phones = [];
+
+    const authHeader = req.headers.cookie;
+    const token = authHeader && authHeader.split("; ")[0].split("=")[1];
+    const decodedToken = jwt.decode(token);
+    var is_admin = decodedToken.is_admin;
+    
+    if (is_admin == 1) {
+      res.render('edit.ejs', {
+        client_id: row.id,
+        name: row.name,
+        address: row.address,
+        country: row.country,
+        state: row.state,
+        city: row.city,
+        cpf: row.number_cpf,
+        cep: row.zip,
+        emails: emails,
+        phones: phones,
+        is_admin: decodedToken.is_admin,
+        user_token: token
+      });
+    } // end if(is_admin == 1)
+    else {
+      res.redirect('../');
+    }
+
+  });
+
+   // ================= Edit new client post ===================
+   clients_router.post('/edit/:client2edit',checkToken, (req, res, next) => {
+    console.log(req.body);
+
+    const cli = req.params.client2edit;
+    var emails = [];
+    var phones = [];
+
+    const authHeader = req.headers.cookie;
+    const token = authHeader && authHeader.split("; ")[0].split("=")[1];
+    const decodedToken = jwt.decode(token);
+    var is_admin = decodedToken.is_admin;
+    
+    if (is_admin == 1) {
+      
+      //REMEMBER to work on this:
+      db.get(`SELECT * FROM \`clients\` WHERE \`id\` = ${cli};`,(err, row)=> {
+        if (err) {
+          throw err;
+          }
+      });
+
+    } // end if(is_admin == 1)
 
   });
 

@@ -24,6 +24,10 @@ CREATE TABLE 'clients' (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   `name` varchar(255) NOT NULL,
   `address` varchar(255) default NULL,
+  `country` varchar(255) default NULL,
+  `state` varchar(255) default NULL,
+  `city` varchar(255) default NULL,
+  `zip` varchar(255) default NULL,
   `number_cpf` INTEGER default NULL,
   `creator_id`  INTEGER NOT NULL,
   `creator_username` varchar(255) NOT NULL

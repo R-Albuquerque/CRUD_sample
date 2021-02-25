@@ -1,6 +1,7 @@
 var provinceKeys = Object.keys(provinces_states);
+
 window.onload = function() {
-   let countrySelect = document.getElementById("inputCountry");
+   var countrySelect = document.getElementById("inputCountry");
     
    for(var i=0; i<provinceKeys.length; i++){
       let optionCountry = document.createElement('option');
@@ -50,7 +51,7 @@ window.onload = function() {
         // console.log(provinceKeys[i]);
         if(provinceKeys[i] == c){
                    index = c;
-                   console.log(provinces_states[2]);
+                   console.log(provinces_states[c]);
                 }
       }
  
