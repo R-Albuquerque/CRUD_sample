@@ -74,12 +74,16 @@ clients_router.get('/', (req, res, next) => {
               cpf: row.number_cpf,
               emails: emails,
               phones: phones,
+              country: row.country,
+              state: row.state,
+              city: row.city,
+              cep: row.zip,
               is_admin: decodedToken.is_admin,
               user_token: token
             });
           })
         })
-    });
+    });//end of db.get()
   });
 
   // ================= Register new client ===================
@@ -90,7 +94,7 @@ clients_router.get('/', (req, res, next) => {
     const token = authHeader && authHeader.split("; ")[0].split("=")[1];
     const decodedToken = jwt.decode(token);
 
-    var address = req.body.address1 + '#' + req.body.address2;
+    var address = req.body.address1 + '[=' + req.body.address2;
     var mails = req.body.emails.split(',');
     var phonenums = req.body.phones.split(',');
     var client_cpf = parseInt((req.body.cpf).replace(/\./g,"").replace(/\-/g,''));
@@ -172,20 +176,46 @@ clients_router.get('/', (req, res, next) => {
     var is_admin = decodedToken.is_admin;
     
     if (is_admin == 1) {
-      res.render('edit.ejs', {
-        client_id: row.id,
-        name: row.name,
-        address: row.address,
-        country: row.country,
-        state: row.state,
-        city: row.city,
-        cpf: row.number_cpf,
-        cep: row.zip,
-        emails: emails,
-        phones: phones,
-        is_admin: decodedToken.is_admin,
-        user_token: token
-      });
+      db.get(`SELECT * FROM \`clients\` WHERE \`id\` = ${cli};`,(err, row)=> {
+        if (err) {
+          throw err;
+          }
+          db.all(`SELECT * FROM \`emails\` WHERE \`client_id\` = ${cli};`,(er,mailrow)=>{
+            if (er) {
+              throw er;
+            }
+            var mailkeys = Object.keys(mailrow);
+            for (let i = 0; i < mailkeys.length; i++) {
+              emails.push(mailrow[i]['email']);            
+            }
+            db.all(`SELECT * FROM \`phones\` WHERE \`client_id\` = ${cli};`,(er,phonerow)=>{
+              if (er) {
+                console.log(er);;
+              }
+              if (row == undefined) {
+                return res.render('error.ejs', {erro: 'Client not found', redirect: '../../'})
+              }
+              var phonekeys = Object.keys(phonerow);
+              for (let j = 0; j < phonekeys.length; j++) {
+                phones.push(phonerow[j]['number']);
+              }
+              res.render('edit.ejs', {
+                client_id: row.id,
+                name: row.name,
+                address: row.address,
+                country: row.country,
+                state: row.state,
+                city: row.city,
+                cpf: row.number_cpf,
+                cep: row.zip,
+                emails: emails,
+                phones: phones,
+                is_admin: decodedToken.is_admin,
+                user_token: token
+              });
+            })
+          })
+      });//end of db.get()
     } // end if(is_admin == 1)
     else {
       res.redirect('../');

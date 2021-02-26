@@ -11,6 +11,7 @@ var chosenphones = [];
 $('.cpf').mask('000.000.000-00', {reverse: true});
 $('.cep').mask('00000-000');
 
+
 function delemail(t,c) {
   var index = chosenemails.indexOf(c);
   if (index > -1) {

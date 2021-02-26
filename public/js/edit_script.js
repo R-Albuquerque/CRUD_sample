@@ -13,7 +13,10 @@ var chosenphones = [];
   $("#emailwarn").html("");
 
 $('.cpf').mask('000.000.000-00', {reverse: true});
-$('.cep').mask('00000-000');
+
+if (readyCountry == "Brazil") {
+  $('.cep').mask('00000-000');
+}
 
 function delemail(t,c) {
   var index = chosenemails.indexOf(c);
@@ -23,7 +26,7 @@ function delemail(t,c) {
   t.remove();
   $("#emaillist").val(chosenemails);
   togBut(chosenemails, "email");
-  // console.log(chosenings);
+
 }
 
 function delphone(t,c) {
@@ -40,8 +43,7 @@ function delphone(t,c) {
 
 function togBut(list, field){
   var ident = '#no'+field;
-  // console.log(ident);
-  // console.log($(ident).text());
+
   var emptylists = false;
     if (list.length <= 0) {
       $(':input[type="submit"]').prop('disabled', true);
@@ -51,7 +53,6 @@ function togBut(list, field){
       $(`#no${field}`).text("");
     }
 
-    // console.log(list);
     var ls2c = [chosenphones,chosenemails];
     for (var i = 0; i < ls2c.length; i++) {
       if (ls2c[i].length <= 0) {
@@ -110,7 +111,10 @@ $(document).ready(function(){
            
     }
 
-    $('#inputCity').val(readyCity);
+  $('#inputCity').val(readyCity);
+
+  $("#inputAddress").val(address[0]);
+  $("#inputAddress2").val(address[1]);
 
   $(':input[type="text"]').keyup(function(){
     var this_inp = $(this).val();

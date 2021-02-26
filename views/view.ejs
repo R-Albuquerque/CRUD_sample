@@ -74,8 +74,24 @@
                         </td>
                       </tr>
                       <tr>
-                        <th scope="row">Adress</th>
-                        <td><%= address %></td>
+                        <th scope="row">Country</th>
+                        <td><%=country%></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">State</th>
+                        <td><%=state%></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">City</th>
+                        <td><%=city%></td>
+                      </tr>                      
+                      <tr>
+                        <th scope="row">Address</th>
+                        <td id="addressField"></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Zip Code</th>
+                        <td><%=cep%></td>
                       </tr>
                     </tbody>
                   </table>
@@ -109,6 +125,9 @@
         $('#cpfField').text(function(i, text) {
           return text.replace(/(\d{3})(\d{3})(\d{3})/, '$1.$2.$3-');
         });
+
+        var parsedAddress = "<%=address%>".split("[=");
+        $("#addressField").html(parsedAddress[0]+"<br>"+parsedAddress[1]);
       
       });
   </script>

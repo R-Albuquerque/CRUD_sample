@@ -2,16 +2,17 @@ const cleanInput = (inp) => (inp.replace("<", "")
                               .replace("{", "")
                               .replace("[", "")
                               .replace(";", ".")
-                              .replace("#", "")
+                              // .replace("#", "")
+                              .replace("=", "")
                               .replace("\\", ""));
 
  // Cleans emailegory and ingredient text inputs
 function cleanemailphone(input){
   var clean = cleanInput(input).replace(",", "")
                                .replace("/", "")
+                               .replace("#", "")
                                .replace("+", "")
                                .replace("*", "")
-                               .replace("=", "")
                                .replace('"', "")
                                .replace("'", "");
                               //  .replace('"', "&#34;")

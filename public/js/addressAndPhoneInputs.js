@@ -45,7 +45,12 @@ window.onload = function() {
      stateSelect.innerHTML = '';
      var num_est = provinces_states.length;
      var index = -1;
-     
+     if (c == "Brazil") {
+      $('.cep').mask('00000-000');
+      }
+      else{
+         $('.cep').unmask();
+      }
     console.log(c);
      for(var i=0; i<provinceKeys.length; i++){
         // console.log(provinceKeys[i]);
