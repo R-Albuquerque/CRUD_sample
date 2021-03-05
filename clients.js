@@ -88,7 +88,7 @@ clients_router.get('/', (req, res, next) => {
 
   // ================= Register new client ===================
   clients_router.post('/register_client', (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
 
     const authHeader = req.headers.cookie;
     const token = authHeader && authHeader.split("; ")[0].split("=")[1];
@@ -140,6 +140,7 @@ clients_router.get('/', (req, res, next) => {
             console.log("===>NOT OK<===");
               break;
           }
+          console.log(phonenums);
           db.run(`INSERT INTO \`phones\`
           (\`number\`,\`client_id\`)
           VALUES
@@ -164,7 +165,7 @@ clients_router.get('/', (req, res, next) => {
 
    // ================= Client edit form ===================
    clients_router.get('/edit/:client2edit',checkToken, (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
 
     const cli = req.params.client2edit;
     var emails = [];
@@ -186,11 +187,11 @@ clients_router.get('/', (req, res, next) => {
             }
             var mailkeys = Object.keys(mailrow);
             for (let i = 0; i < mailkeys.length; i++) {
-              emails.push(mailrow[i]['email']);            
+              emails.push(mailrow[i]['email']);                    
             }
             db.all(`SELECT * FROM \`phones\` WHERE \`client_id\` = ${cli};`,(er,phonerow)=>{
               if (er) {
-                console.log(er);;
+                console.log(er);
               }
               if (row == undefined) {
                 return res.render('error.ejs', {erro: 'Client not found', redirect: '../../'})
@@ -199,6 +200,7 @@ clients_router.get('/', (req, res, next) => {
               for (let j = 0; j < phonekeys.length; j++) {
                 phones.push(phonerow[j]['number']);
               }
+              console.log(emails);  
               res.render('edit.ejs', {
                 client_id: row.id,
                 name: row.name,
@@ -228,9 +230,10 @@ clients_router.get('/', (req, res, next) => {
     console.log(req.body);
 
     const cli = req.params.client2edit;
+    var client_cpf = parseInt((req.body.cpf).replace(/\./g,"").replace(/\-/g,''));
     var emails = [];
     var phones = [];
-
+    console.log("cli:"+cli);
     const authHeader = req.headers.cookie;
     const token = authHeader && authHeader.split("; ")[0].split("=")[1];
     const decodedToken = jwt.decode(token);
@@ -243,7 +246,54 @@ clients_router.get('/', (req, res, next) => {
         if (err) {
           throw err;
           }
-      });
+          const toUpdate = {};
+          if (row.name != req.body.name) {
+            toUpdate.name = [req.body.name, "str"];
+          }
+          if (row.number_cpf != client_cpf) {
+            toUpdate.number_cpf = [client_cpf, "num"];
+          }
+          if (row.country != req.body.country) {
+            toUpdate.country = [req.body.country, "str"];
+          }
+          if (row.state != req.body.state) {
+            toUpdate.state = [req.body.state, "str"];
+          }
+          if (row.city != req.body.city) {
+            toUpdate.city = [req.body.city, "str"];
+          }
+          let reqadd =req.body.address1 + '[=' + req.body.address2;
+          if (reqadd != row.address) {
+            toUpdate.address = [reqadd, "str"]
+          }
+          if (row.zip != req.body.cep) {
+            toUpdate.zip = [req.body.cep, "num"];
+          }
+          const columns2update = Object.keys(toUpdate);
+          if (columns2update.length > 0) {
+              var clientUpdateQuery = `UPDATE \`clients\` SET `;
+            for (const valor in toUpdate) {
+              if (Object.hasOwnProperty.call(toUpdate, valor)) {
+
+                if (toUpdate[valor][1] == "str") {
+                  clientUpdateQuery += `${valor} = "${toUpdate[valor][0]}",`;
+                }
+                else{
+                  clientUpdateQuery += `${valor} = ${toUpdate[valor][0]},`;
+                }
+
+              }
+            }
+            clientUpdateQuery = clientUpdateQuery.slice(0, -1) + ` WHERE \`id\` = ${cli};`;
+            console.log(clientUpdateQuery);
+            db.run(clientUpdateQuery.slice(0, -1),(err) => {
+              if (err){throw err};
+            })
+          }
+
+
+          
+      });//end of db.get()
 
     } // end if(is_admin == 1)
 
@@ -254,7 +304,7 @@ clients_router.post('/delete_client', (req, res, next) => {
     // Check if the user requesting the deletion is admin
     var is_admin = jwt.decode(req.body.user_token).is_admin;
     if (is_admin == 1) {
-
+      console.log(req.body);
       // Delete from client, email and phone tables all registers of the client
       db.serialize(() => {
 

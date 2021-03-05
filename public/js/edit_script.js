@@ -7,10 +7,10 @@ var phonecount = 0;
 var chosenphones = [];
 
 
-  togBut(chosenemails, 'email');
-  $("#emaillist").val(chosenemails);
-  $("#emails").val("");
-  $("#emailwarn").html("");
+  // togBut(chosenemails, 'email');
+  // $("#emaillist").val(chosenemails);
+  // $("#emails").val("");
+  // $("#emailwarn").html("");
 
 $('.cpf').mask('000.000.000-00', {reverse: true});
 
@@ -75,7 +75,9 @@ $(document).ready(function(){
         onclick="delemail(this, '${cleanemailphone(readyMails[i])}')">${cleanemailphone(readyMails[i])}</span>`
       );
       chosenemails.push(cleanemailphone(readyMails[i]));
+      $("#emaillist").val(chosenemails);
       emailcount++;
+      // console.log(chosenemails);
     }
     
     for (let j = 0; j < readyPhones.length; j++) {
@@ -85,9 +87,11 @@ $(document).ready(function(){
             onclick="delphone(this, '${readyPhones[j]}')">${readyPhones[j]}</span>`
           );
           chosenphones.push(readyPhones[j]);
+          $("#phonelist").val(chosenphones);
           phonecount++;
     }
-    
+    console.log($("#emaillist").val());
+    console.log($("#phonelist").val());
     var provinceKeys = Object.keys(provinces_states);
     var countrySelect = $("#inputCountry");
     var stateSelect = $("#inputState");

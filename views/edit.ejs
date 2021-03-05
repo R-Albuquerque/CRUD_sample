@@ -37,11 +37,11 @@
 <h1>Edit Client</h1>
 
 <br>
-<h1 class='text-center'>Edit Client</h1>
+<h1 class='text-center'>Edit Client <%=client_id%></h1>
 <hr>
 
 <div class="container">
-  <form class="" action="./register_client" method="post">
+  <form class="" action="./<%=client_id%> " method="post">
     <div class="form-group">
       <label for="rname">Name:</label>
       <input value="<%=name%>" type="text" class="form-control" id="" placeholder="Client name" name="name" required>

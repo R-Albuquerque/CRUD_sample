@@ -48,7 +48,7 @@ CREATE TABLE 'emails' (
 DROP TABLE IF EXISTS 'phones';
 CREATE TABLE 'phones' (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  `number` INTEGER NOT NULL,
+  `number` varchar(255) NOT NULL,
   `client_id` INTEGER NOT NULL,
   CONSTRAINT `phone_owner`
     FOREIGN KEY(`client_id`)

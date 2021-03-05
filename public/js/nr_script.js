@@ -101,16 +101,16 @@ $(document).ready(function(){
 
   $("#addphone").click(function(){
     var phoneNum = $("#phones").val()
-    phonetxt = $("#countryCode").val() + cleanemailphone(phoneNum);
+    phonetxt = $("#countryCode").val() + " " + cleanphone(phoneNum);
     if (cleanphone(phonetxt) == "") {
       $("#phonewarn").html("Insert phone.");
     }
     else {
       $('#phonebox').append(
         `<span type ="button" class='emailpill btn btn-info'
-        onclick="delphone(this, '${cleanphone(phonetxt)}')">${cleanphone(phonetxt)}</span>`
+        onclick="delphone(this, '${phonetxt}')">${phonetxt}</span>`
       );
-      chosenphones.push(cleanphone(phonetxt));
+      chosenphones.push(phonetxt);
       phonecount++;
       togBut(chosenphones, 'phone');
       $("#phonelist").val(chosenphones);

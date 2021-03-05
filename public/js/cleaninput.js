@@ -22,7 +22,7 @@ function cleanemailphone(input){
 }
 function cleanphone(input){
       // console.log(input);
-      return input.replace(/\D/g,'');;
+      return input.replace(/\D/g,'');
 }
 
 function validateEmail(email) {
