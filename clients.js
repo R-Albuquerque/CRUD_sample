@@ -267,7 +267,7 @@ clients_router.get('/', (req, res, next) => {
             toUpdate.address = [reqadd, "str"]
           }
           if (row.zip != req.body.cep) {
-            toUpdate.zip = [req.body.cep, "num"];
+            toUpdate.zip = [req.body.cep, "str"];
           }
           const columns2update = Object.keys(toUpdate);
           if (columns2update.length > 0) {
@@ -288,6 +288,7 @@ clients_router.get('/', (req, res, next) => {
             console.log(clientUpdateQuery);
             db.run(clientUpdateQuery.slice(0, -1),(err) => {
               if (err){throw err};
+              res.redirect('../view/'+cli);
             })
           }
 
